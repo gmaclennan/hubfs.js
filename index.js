@@ -47,11 +47,9 @@ function ghfs(repo) {
  * 
  * @param  {String}   filename
  * @param  {String|Buffer}   data
- * @param  {Object}   [options]
- * @param  {String|null} [options.encoding=utf8]
- * @param  {String} [options.flag=w] 'w' will overwrite, 'wx' will fail if path exists
- * @param  {String} [options.message=Update `filename`] Commit message
- * @param  {String} [options.branch=master] Repo branch
+ * @param  {Object}   [options] `options.encoding='utf8'` `options.flag='w'` 
+ * default will overwrite, `'wx'` will fail if path exists. `options.message` Commit message. 
+ * `options.branch='master'` branch to write to.
  * @param  {Function} callback
  * @example
  * gh.writeFile('message.txt', 'Hello Github', function (err) {
@@ -120,9 +118,8 @@ ghfs.prototype.writeFile = function writeFile(filename, data, options, callback)
  *
  * If no encoding is specified, then the raw buffer is returned.
  * @param  {String}   filename
- * @param  {Object}   [options]
- * @param  {String|null} [options.encoding=null]
- * @param  {String} [options.ref=master] The name of the commit/branch/tag
+ * @param  {Object}   [options] `options.encoding=null` (returns Buffer) 
+ * `options.ref='master' name of the commit/branch/tag
  * @param  {Function} callback
  * @example
  * gh.readFile('/my_folder/my_file.txt', function (err, data) { 

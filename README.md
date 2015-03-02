@@ -40,7 +40,7 @@ var gh = ghfs(octo.repos('owner', 'repo'));
 **Returns** `Object`, returns and instance of ghfs with two methods `readFile` and `writeFile`.
 
 
-### `writeFile(filename, data, [options], [options.encoding=utf8], [options.flag=w], [options.message=Update, [options.branch=master], callback)`
+### `writeFile(filename, data, [options], callback)`
 
 Asynchronously writes data to a file on Github, replacing the file if it
 already exists. `data` can be a string or a buffer.
@@ -53,16 +53,13 @@ not it is preceded by a slash.
 
 ### Parameters
 
-| parameter                 | type           | description                                                   |
-| ------------------------- | -------------- | ------------------------------------------------------------- |
-| `filename`                | String         |                                                               |
-| `data`                    | String\,Buffer |                                                               |
-| `[options]`               | Object         | _optional:_                                                   |
-| `[options.encoding=utf8]` | String         | _optional:_                                                   |
-| `[options.flag=w]`        | String         | _optional:_ 'w' will overwrite, 'wx' will fail if path exists |
-| `[options.message=Update` | String         | _optional:_ `filename`] Commit message                        |
-| `[options.branch=master]` | String         | _optional:_ Repo branch                                       |
-| `callback`                | Function       |                                                               |
+| parameter   | type           | description                                                                                                                                                                                        |
+| ----------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filename`  | String         |                                                                                                                                                                                                    |
+| `data`      | String\,Buffer |                                                                                                                                                                                                    |
+| `[options]` | Object         | _optional:_ `options.encoding='utf8'` `options.flag='w'` default will overwrite, `'wx'` will fail if path exists. `options.message` Commit message. 
+`options.branch='master'` branch to write to. |
+| `callback`  | Function       |                                                                                                                                                                                                    |
 
 
 ### Example
@@ -75,7 +72,7 @@ gh.writeFile('message.txt', 'Hello Github', function (err) {
 ```
 
 
-### `readFile(filename, [options], [options.encoding=null], [options.ref=master], callback)`
+### `readFile(filename, [options], callback)`
 
 Asynchronously read a file on Github.
 
@@ -89,13 +86,11 @@ If no encoding is specified, then the raw buffer is returned.
 
 ### Parameters
 
-| parameter                 | type     | description                                   |
-| ------------------------- | -------- | --------------------------------------------- |
-| `filename`                | String   |                                               |
-| `[options]`               | Object   | _optional:_                                   |
-| `[options.encoding=null]` | String   | _optional:_                                   |
-| `[options.ref=master]`    | String   | _optional:_ The name of the commit/branch/tag |
-| `callback`                | Function |                                               |
+| parameter   | type     | description                                                                                              |
+| ----------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| `filename`  | String   |                                                                                                          |
+| `[options]` | Object   | _optional:_ `options.encoding=null` (returns Buffer) `options.ref='master' name of the commit/branch/tag |
+| `callback`  | Function |                                                                                                          |
 
 
 ### Example
