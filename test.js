@@ -1,4 +1,4 @@
-var ghfs = require('./');
+var hubfs = require('./');
 var test = require('tape');
 var Octokat = require('octokat');
 var dotenv = require('dotenv');
@@ -15,7 +15,7 @@ var octo = new Octokat({
 
 var repo = octo.repos(testUser, tempRepoName);
 
-var gh = ghfs(repo);
+var fs = hubfs(repo);
 
 function setup() {
     test('Create temporary test repo', function(t) {
@@ -32,23 +32,23 @@ function teardown() {
 setup();
 
 test('Creates new file', function(t) {
-    gh.writeFile('test.txt', 'hello world', t.end);
+    fs.writeFile('test.txt', 'hello world', t.end);
 });
 
 test('Updates an existing file', function(t) {
-    gh.writeFile('test.txt', 'hello planet', t.end);
+    fs.writeFile('test.txt', 'hello planet', t.end);
 });
 
 test('Creates large file', function(t) {
-    gh.writeFile('test.bin', new Buffer(1100000), t.end);
+    fs.writeFile('test.bin', new Buffer(1100000), t.end);
 });
 
 test('Updates large file', function(t) {
-    gh.writeFile('test.bin', new Buffer(1100002), t.end);
+    fs.writeFile('test.bin', new Buffer(1100002), t.end);
 });
 
 test('Reads text file', function(t) {
-    gh.readFile('test.txt', { encoding: 'utf8' }, function(err, data) {
+    fs.readFile('test.txt', { encoding: 'utf8' }, function(err, data) {
         t.error(err);
         t.equal(data, 'hello planet');
         t.end();
@@ -56,7 +56,7 @@ test('Reads text file', function(t) {
 });
 
 test('Reads binary file', function(t) {
-    gh.readFile('test.txt', function(err, data) {
+    fs.readFile('test.txt', function(err, data) {
         t.error(err);
         t.ok(bufferEqual(data, new Buffer('hello planet')), 'Buffer contents match');
         t.end();
@@ -64,7 +64,7 @@ test('Reads binary file', function(t) {
 });
 
 test('Reads large file', function(t) {
-    gh.readFile('test.bin', t.end);
+    fs.readFile('test.bin', t.end);
 });
 
 teardown();
