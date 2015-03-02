@@ -29,22 +29,28 @@ function teardown() {
     });
 }
 
+function pauseAndEnd(t) {
+    return function(err) {
+        setTimeout(t.end.bind(null, err), 500);
+    };
+}
+
 setup();
 
 test('Creates new file', function(t) {
-    fs.writeFile('test.txt', 'hello world', t.end);
+    fs.writeFile('test.txt', 'hello world', pauseAndEnd(t));
 });
 
 test('Updates an existing file', function(t) {
-    fs.writeFile('test.txt', 'hello planet', t.end);
+    fs.writeFile('test.txt', 'hello planet', pauseAndEnd(t));
 });
 
 test('Creates large file', function(t) {
-    fs.writeFile('test.bin', new Buffer(1100000), t.end);
+    fs.writeFile('test.bin', new Buffer(1100000), pauseAndEnd(t));
 });
 
 test('Updates large file', function(t) {
-    fs.writeFile('test.bin', new Buffer(1100002), t.end);
+    fs.writeFile('test.bin', new Buffer(1100002), pauseAndEnd(t));
 });
 
 test('Reads text file', function(t) {
