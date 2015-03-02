@@ -102,7 +102,7 @@ ghfs.prototype.writeFile = function writeFile(filename, data, options, callback)
   // First, just try to write the file without a sha, but if we get a 422 error,
   // try to get the sha and write an update
   file.add(params, function(err) {
-    if (!err) return callback();
+    if (!err) return callback(null);
     if (err.status !== 422 || options.flags === 'wx') return callback(err);
     return _this._getSha.call(_this, params, function(err, sha) {
       if (err) return callback(err);
