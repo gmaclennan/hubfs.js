@@ -12,7 +12,7 @@ var extend = require("xtend");
  * larger files up to 100Mb (although, the xmlhttprequest library used by
  * Octokat seems to timeout for files that large)
  * @param  {Octokat.users.repo} repo A vaid repo returned from Octokat with
- * the call octo.user.repos(`user`, `reponame`). See below for examples.
+ * the call `octo.user.repos('user', 'reponame')`. See below for examples.
  * @return {Object}      returns and instance of ghfs with two methods
  * `readFile` and `writeFile`.
  * @example
@@ -48,8 +48,7 @@ function ghfs(repo) {
  * @param  {String}   filename
  * @param  {String|Buffer}   data
  * @param  {Object}   [options] `options.encoding='utf8'` `options.flag='w'` 
- * default will overwrite, `'wx'` will fail if path exists. `options.message` Commit message. 
- * `options.branch='master'` branch to write to.
+ * default will overwrite, `'wx'` will fail if path exists. `options.message` Commit message. `options.branch='master'` branch to write to.
  * @param  {Function} callback
  * @example
  * gh.writeFile('message.txt', 'Hello Github', function (err) {
@@ -119,7 +118,7 @@ ghfs.prototype.writeFile = function writeFile(filename, data, options, callback)
  * If no encoding is specified, then the raw buffer is returned.
  * @param  {String}   filename
  * @param  {Object}   [options] `options.encoding=null` (returns Buffer) 
- * `options.ref='master' name of the commit/branch/tag
+ * `options.ref='master'` name of the commit/branch/tag
  * @param  {Function} callback
  * @example
  * gh.readFile('/my_folder/my_file.txt', function (err, data) { 

@@ -20,9 +20,9 @@ Octokat seems to timeout for files that large)
 
 ### Parameters
 
-| parameter | type                 | description                                                                                                  |
-| --------- | -------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `repo`    | Octokat\.users\.repo | A vaid repo returned from Octokat with the call octo.user.repos(`user`, `reponame`). See below for examples. |
+| parameter | type                 | description                                                                                                    |
+| --------- | -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `repo`    | Octokat\.users\.repo | A vaid repo returned from Octokat with the call `octo.user.repos('user', 'reponame')`. See below for examples. |
 
 
 ### Example
@@ -53,13 +53,12 @@ not it is preceded by a slash.
 
 ### Parameters
 
-| parameter   | type           | description                                                                                                                                                                                        |
-| ----------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `filename`  | String         |                                                                                                                                                                                                    |
-| `data`      | String\,Buffer |                                                                                                                                                                                                    |
-| `[options]` | Object         | _optional:_ `options.encoding='utf8'` `options.flag='w'` default will overwrite, `'wx'` will fail if path exists. `options.message` Commit message. 
-`options.branch='master'` branch to write to. |
-| `callback`  | Function       |                                                                                                                                                                                                    |
+| parameter   | type           | description                                                                                                                                                                                       |
+| ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `filename`  | String         |                                                                                                                                                                                                   |
+| `data`      | String\,Buffer |                                                                                                                                                                                                   |
+| `[options]` | Object         | _optional:_ `options.encoding='utf8'` `options.flag='w'` default will overwrite, `'wx'` will fail if path exists. `options.message` Commit message. `options.branch='master'` branch to write to. |
+| `callback`  | Function       |                                                                                                                                                                                                   |
 
 
 ### Example
@@ -86,11 +85,11 @@ If no encoding is specified, then the raw buffer is returned.
 
 ### Parameters
 
-| parameter   | type     | description                                                                                              |
-| ----------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| `filename`  | String   |                                                                                                          |
-| `[options]` | Object   | _optional:_ `options.encoding=null` (returns Buffer) `options.ref='master' name of the commit/branch/tag |
-| `callback`  | Function |                                                                                                          |
+| parameter   | type     | description                                                                                               |
+| ----------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `filename`  | String   |                                                                                                           |
+| `[options]` | Object   | _optional:_ `options.encoding=null` (returns Buffer) `options.ref='master'` name of the commit/branch/tag |
+| `callback`  | Function |                                                                                                           |
 
 
 ### Example
