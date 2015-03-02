@@ -77,7 +77,7 @@ hubfs.prototype.writeFile = function writeFile(filename, data, options, callback
 
   options = extend(writeDefaults, options);
 
-  if (!(data instanceof Buffer))
+  if (!(Buffer.isBuffer(data)))
     data = new Buffer(data, options.encoding);
 
   // Remove preceding slash on filename
