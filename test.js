@@ -39,11 +39,11 @@ test('Updates an existing file', function(t) {
     gh.writeFile('test.txt', 'hello planet', t.end);
 });
 
-test.skip('Creates large file', function(t) {
+test('Creates large file', function(t) {
     gh.writeFile('test.bin', new Buffer(1100000), t.end);
 });
 
-test.skip('Updates large file', function(t) {
+test('Updates large file', function(t) {
     gh.writeFile('test.bin', new Buffer(1100002), t.end);
 });
 

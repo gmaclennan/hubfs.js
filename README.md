@@ -1,5 +1,7 @@
 # ghfs
 
+[![build status](https://secure.travis-ci.org/gmaclennan/ghfs.js.png)](http://travis-ci.org/gmaclennan/ghfs.js)
+
 Github API wrapper to writeFile and readFile
 
 
