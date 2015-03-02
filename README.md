@@ -25,31 +25,27 @@ Octokat seems to timeout for files that large)
 | `repo`    | Octokat\.users\.repo | A vaid repo returned from Octokat with the call octo.user.repos(`user`, `reponame`). See below for examples. |
 
 
+### Example
+
+```js
+var ghfs = require('ghfs'); 
+var Octokat = require('octokat');
+
+var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
+
+var gh = ghfs(octo.repos('owner', 'repo'));
+```
+
 
 **Returns** `Object`, returns and instance of ghfs with two methods `readFile` and `writeFile`.
 
 
-### `writeFile(filename, data, [options], [options.encoding=utf8], [options.flag=w], [options.message=Update/create, [options.branch=master], callback)`
+### `writeFile(filename, data, [options], [options.encoding=utf8], [options.flag=w], [options.message=Update, [options.branch=master], callback)`
 
 Asynchronously writes data to a file on Github, replacing the file if it
 already exists. `data` can be a string or a buffer.
 
 The `encoding` option is ignored if `data` is a buffer. It defaults to `'utf8'`.
-
-Example:
-
-```js
-var ghfs = require('ghfs'); var Octokat = require('octokat');
-
-var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
-
-var gh = ghfs(octo.repos('owner', 'repo'));
-
-gh.writeFile('message.txt', 'Hello Github', function (err) {
-  if (err) throw err;
-  console.log('It\'s saved!');
-});
-```
 
 The file path is always interpreted from the root of the repo, whether or
 not it is preceded by a slash.
@@ -57,35 +53,31 @@ not it is preceded by a slash.
 
 ### Parameters
 
-| parameter                        | type           | description                                                   |
-| -------------------------------- | -------------- | ------------------------------------------------------------- |
-| `filename`                       | String         |                                                               |
-| `data`                           | String\,Buffer |                                                               |
-| `[options]`                      | Object         | _optional:_                                                   |
-| `[options.encoding=utf8]`        | String\,Null   | _optional:_                                                   |
-| `[options.flag=w]`               | String         | _optional:_ 'w' will overwrite, 'wx' will fail if path exists |
-| `[options.message=Update/create` | String         | _optional:_ `filename`] Commit message                        |
-| `[options.branch=master]`        | String         | _optional:_ Repo branch                                       |
-| `callback`                       | Function       |                                                               |
+| parameter                 | type           | description                                                   |
+| ------------------------- | -------------- | ------------------------------------------------------------- |
+| `filename`                | String         |                                                               |
+| `data`                    | String\,Buffer |                                                               |
+| `[options]`               | Object         | _optional:_                                                   |
+| `[options.encoding=utf8]` | String         | _optional:_                                                   |
+| `[options.flag=w]`        | String         | _optional:_ 'w' will overwrite, 'wx' will fail if path exists |
+| `[options.message=Update` | String         | _optional:_ `filename`] Commit message                        |
+| `[options.branch=master]` | String         | _optional:_ Repo branch                                       |
+| `callback`                | Function       |                                                               |
 
+
+### Example
+
+```js
+gh.writeFile('message.txt', 'Hello Github', function (err) {
+  if (err) throw err;
+  console.log('It\'s saved!');
+});
+```
 
 
 ### `readFile(filename, [options], [options.encoding=null], [options.ref=master], callback)`
 
-Asynchronously read a file on Github. Example:
-
-```js
-var ghfs = require('ghfs'); var Octokat = require('octokat');
-
-var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
-
-var gh = ghfs(octo.repos('owner', 'repo'));
-
-gh.readFile('/my_folder/my_file.txt', function (err, data) { 
-  if (err) throw err; 
-  console.log(data);
-});
-```
+Asynchronously read a file on Github.
 
 The file path is always interpreted from the root of the repo, whether or
 not it is preceded by a slash.
@@ -97,14 +89,23 @@ If no encoding is specified, then the raw buffer is returned.
 
 ### Parameters
 
-| parameter                 | type         | description                                   |
-| ------------------------- | ------------ | --------------------------------------------- |
-| `filename`                | String       |                                               |
-| `[options]`               | Object       | _optional:_                                   |
-| `[options.encoding=null]` | String\,Null | _optional:_                                   |
-| `[options.ref=master]`    | String       | _optional:_ The name of the commit/branch/tag |
-| `callback`                | Function     |                                               |
+| parameter                 | type     | description                                   |
+| ------------------------- | -------- | --------------------------------------------- |
+| `filename`                | String   |                                               |
+| `[options]`               | Object   | _optional:_                                   |
+| `[options.encoding=null]` | String   | _optional:_                                   |
+| `[options.ref=master]`    | String   | _optional:_ The name of the commit/branch/tag |
+| `callback`                | Function |                                               |
 
+
+### Example
+
+```js
+gh.readFile('/my_folder/my_file.txt', function (err, data) { 
+  if (err) throw err; 
+  console.log(data);
+});
+```
 
 ## Installation
 

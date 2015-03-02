@@ -15,6 +15,13 @@ var extend = require("xtend");
  * the call octo.user.repos(`user`, `reponame`). See below for examples.
  * @return {Object}      returns and instance of ghfs with two methods
  * `readFile` and `writeFile`.
+ * @example
+ * var ghfs = require('ghfs'); 
+ * var Octokat = require('octokat');
+ *
+ * var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
+ *
+ * var gh = ghfs(octo.repos('owner', 'repo'));
  */
 function ghfs(repo) {
   if (!(this instanceof ghfs)) {
@@ -35,32 +42,22 @@ function ghfs(repo) {
  *
  * The `encoding` option is ignored if `data` is a buffer. It defaults to `'utf8'`.
  *
- * Example:
- *
- * ```js
- * var ghfs = require('ghfs'); var Octokat = require('octokat');
- *
- * var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
- *
- * var gh = ghfs(octo.repos('owner', 'repo'));
- * 
- * gh.writeFile('message.txt', 'Hello Github', function (err) {
- *   if (err) throw err;
- *   console.log('It\'s saved!');
- * });
- * ```
- *
  * The file path is always interpreted from the root of the repo, whether or
  * not it is preceded by a slash.
  * 
  * @param  {String}   filename
- * @param  {String | Buffer}   data
+ * @param  {String|Buffer}   data
  * @param  {Object}   [options]
- * @param  {String | Null} [options.encoding=utf8]
+ * @param  {String|null} [options.encoding=utf8]
  * @param  {String} [options.flag=w] 'w' will overwrite, 'wx' will fail if path exists
- * @param  {String} [options.message=Update/create `filename`] Commit message
+ * @param  {String} [options.message=Update `filename`] Commit message
  * @param  {String} [options.branch=master] Repo branch
  * @param  {Function} callback
+ * @example
+ * gh.writeFile('message.txt', 'Hello Github', function (err) {
+ *   if (err) throw err;
+ *   console.log('It\'s saved!');
+ * });
  */
 ghfs.prototype.writeFile = function writeFile(filename, data, options, callback) {
   if (typeof filename !== 'string' || filename.length === 0)
@@ -113,20 +110,7 @@ ghfs.prototype.writeFile = function writeFile(filename, data, options, callback)
 };
 
 /**
- * Asynchronously read a file on Github. Example:
- *
- * ```js
- * var ghfs = require('ghfs'); var Octokat = require('octokat');
- *
- * var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
- *
- * var gh = ghfs(octo.repos('owner', 'repo'));
- *
- * gh.readFile('/my_folder/my_file.txt', function (err, data) { 
- *   if (err) throw err; 
- *   console.log(data);
- * });
- * ```
+ * Asynchronously read a file on Github.
  *
  * The file path is always interpreted from the root of the repo, whether or
  * not it is preceded by a slash.
@@ -137,9 +121,14 @@ ghfs.prototype.writeFile = function writeFile(filename, data, options, callback)
  * If no encoding is specified, then the raw buffer is returned.
  * @param  {String}   filename
  * @param  {Object}   [options]
- * @param  {String | Null} [options.encoding=null]
+ * @param  {String|null} [options.encoding=null]
  * @param  {String} [options.ref=master] The name of the commit/branch/tag
  * @param  {Function} callback
+ * @example
+ * gh.readFile('/my_folder/my_file.txt', function (err, data) { 
+ *   if (err) throw err; 
+ *   console.log(data);
+ * });
  */
 ghfs.prototype.readFile = function readFile(filename, options, callback) {
   if (typeof filename !== 'string' || filename.length === 0)
