@@ -1,11 +1,11 @@
-# ghfs
+# hubfs.js
 
-[![build status](https://secure.travis-ci.org/gmaclennan/ghfs.js.png)](http://travis-ci.org/gmaclennan/ghfs.js)
+[![build status](https://secure.travis-ci.org/gmaclennan/hubfs.js.png)](http://travis-ci.org/gmaclennan/hubfs.js)
 
 Github API wrapper to writeFile and readFile
 
 
-### `ghfs(repo)`
+### `hubfs(repo)`
 
 A mixin for [Octokat.js](https://github.com/philschatz/octokat.js) that
 provides a simple wrapper for writing to and reading from a repo. It
@@ -28,16 +28,16 @@ Octokat seems to timeout for files that large)
 ### Example
 
 ```js
-var ghfs = require('ghfs'); 
+var hubfs = require('hubfs'); 
 var Octokat = require('octokat');
 
 var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
 
-var gh = ghfs(octo.repos('owner', 'repo'));
+var gh = hubfs(octo.repos('owner', 'repo'));
 ```
 
 
-**Returns** `Object`, returns and instance of ghfs with two methods `readFile` and `writeFile`.
+**Returns** `Object`, returns and instance of hubfs with two methods `readFile` and `writeFile`.
 
 
 ### `writeFile(filename, data, [options], callback)`
@@ -106,7 +106,7 @@ gh.readFile('/my_folder/my_file.txt', function (err, data) {
 Requires [nodejs](http://nodejs.org/).
 
 ```sh
-$ npm install ghfs
+$ npm install hubfs.js
 ```
 
 ## Tests

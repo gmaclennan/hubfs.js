@@ -13,19 +13,19 @@ var extend = require("xtend");
  * Octokat seems to timeout for files that large)
  * @param  {Octokat.users.repo} repo A vaid repo returned from Octokat with
  * the call `octo.user.repos('user', 'reponame')`. See below for examples.
- * @return {Object}      returns and instance of ghfs with two methods
+ * @return {Object}      returns and instance of hubfs with two methods
  * `readFile` and `writeFile`.
  * @example
- * var ghfs = require('ghfs'); 
+ * var hubfs = require('hubfs'); 
  * var Octokat = require('octokat');
  *
  * var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
  *
- * var gh = ghfs(octo.repos('owner', 'repo'));
+ * var gh = hubfs(octo.repos('owner', 'repo'));
  */
-function ghfs(repo) {
-  if (!(this instanceof ghfs)) {
-    return new ghfs(repo);
+function hubfs(repo) {
+  if (!(this instanceof hubfs)) {
+    return new hubfs(repo);
   }
   // Basic checks that we have a valid octokat repo.
   if ((typeof repo !== 'function') ||
@@ -56,7 +56,7 @@ function ghfs(repo) {
  *   console.log('It\'s saved!');
  * });
  */
-ghfs.prototype.writeFile = function writeFile(filename, data, options, callback) {
+hubfs.prototype.writeFile = function writeFile(filename, data, options, callback) {
   if (typeof filename !== 'string' || filename.length === 0)
     throw new Error('Must provide a valid filename');
   if (typeof callback !== 'function') {
@@ -126,7 +126,7 @@ ghfs.prototype.writeFile = function writeFile(filename, data, options, callback)
  *   console.log(data);
  * });
  */
-ghfs.prototype.readFile = function readFile(filename, options, callback) {
+hubfs.prototype.readFile = function readFile(filename, options, callback) {
   if (typeof filename !== 'string' || filename.length === 0)
     throw new Error('Must provide a valid filename');
   if (typeof callback !== 'function') {
@@ -178,7 +178,7 @@ ghfs.prototype.readFile = function readFile(filename, options, callback) {
   }
 };
 
-ghfs.prototype._getSha = function _getSha(params, cb) {
+hubfs.prototype._getSha = function _getSha(params, cb) {
   var _this = this;
 
   _this._repo.contents(params.path).fetch(params, function(err, info) {
@@ -188,7 +188,7 @@ ghfs.prototype._getSha = function _getSha(params, cb) {
   });
 };
 
-ghfs.prototype._getShaSlow = function _getShaSlow(params, cb) {
+hubfs.prototype._getShaSlow = function _getShaSlow(params, cb) {
   var repo = this._repo;
 
   repo.git.refs('heads/' + (params.branch || params.ref)).fetch(function(err, ref) {
@@ -208,4 +208,4 @@ ghfs.prototype._getShaSlow = function _getShaSlow(params, cb) {
   });
 };
 
-module.exports = ghfs;
+module.exports = hubfs;
