@@ -16,7 +16,7 @@ var extend = require("xtend");
  * @return {Object}      returns and instance of hubfs with two methods
  * `readFile` and `writeFile`.
  * @example
- * var hubfs = require('hubfs'); 
+ * var hubfs = require('hubfs');
  * var Octokat = require('octokat');
  *
  * var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
@@ -44,10 +44,10 @@ function hubfs(repo) {
  *
  * The file path is always interpreted from the root of the repo, whether or
  * not it is preceded by a slash.
- * 
+ *
  * @param  {String}   filename
  * @param  {String|Buffer}   data
- * @param  {Object}   [options] `options.encoding='utf8'` `options.flag='w'` 
+ * @param  {Object}   [options] `options.encoding='utf8'` `options.flag='w'`
  * default will overwrite, `'wx'` will fail if path exists. `options.message` Commit message. `options.branch='master'` branch to write to.
  * @param  {Function} callback
  * @example
@@ -117,12 +117,12 @@ hubfs.prototype.writeFile = function writeFile(filename, data, options, callback
  *
  * If no encoding is specified, then the raw buffer is returned.
  * @param  {String}   filename
- * @param  {Object}   [options] `options.encoding=null` (returns Buffer) 
+ * @param  {Object}   [options] `options.encoding=null` (returns Buffer)
  * `options.ref='master'` name of the commit/branch/tag
  * @param  {Function} callback
  * @example
- * gh.readFile('/my_folder/my_file.txt', function (err, data) { 
- *   if (err) throw err; 
+ * gh.readFile('/my_folder/my_file.txt', function (err, data) {
+ *   if (err) throw err;
  *   console.log(data);
  * });
  */
