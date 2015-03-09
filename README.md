@@ -15,8 +15,7 @@ The Github API does not provide an easy way to update a file, and there are
 some little tricky issues around maximum file size for reading using the
 [contents API](https://developer.github.com/v3/repos/contents/). This tries
 to do things the easy (quick) way first, but if not will also work for
-larger files up to 100Mb (although, the xmlhttprequest library used by
-Octokat seems to timeout for files that large)
+larger files up to 100Mb.
 
 ### Parameters
 
@@ -28,7 +27,7 @@ Octokat seems to timeout for files that large)
 ### Example
 
 ```js
-var hubfs = require('hubfs'); 
+var hubfs = require('hubfs');
 var Octokat = require('octokat');
 
 var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
@@ -95,8 +94,8 @@ If no encoding is specified, then the raw buffer is returned.
 ### Example
 
 ```js
-gh.readFile('/my_folder/my_file.txt', function (err, data) { 
-  if (err) throw err; 
+gh.readFile('/my_folder/my_file.txt', function (err, data) {
+  if (err) throw err;
   console.log(data);
 });
 ```

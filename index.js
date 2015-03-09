@@ -9,8 +9,7 @@ var extend = require("xtend");
  * some little tricky issues around maximum file size for reading using the
  * [contents API](https://developer.github.com/v3/repos/contents/). This tries
  * to do things the easy (quick) way first, but if not will also work for
- * larger files up to 100Mb (although, the xmlhttprequest library used by
- * Octokat seems to timeout for files that large)
+ * larger files up to 100Mb.
  * @param  {Octokat.users.repo} repo A vaid repo returned from Octokat with
  * the call `octo.user.repos('user', 'reponame')`. See below for examples.
  * @return {Object}      returns and instance of hubfs with two methods
