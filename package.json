@@ -4,7 +4,7 @@
   "description": "Github API wrapper to writeFile and readFile",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js | tap-spec",
+    "test": "standard & node test.js | tap-spec",
     "doc": "dox -r < index.js | doxme --readme > README.md"
   },
   "keywords": [
