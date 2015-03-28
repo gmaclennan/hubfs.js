@@ -29,6 +29,8 @@ function teardown() {
     });
 }
 
+// This is necessary because sometimes the github API cannot keep up
+// and we get errors
 function pauseAndEnd(t) {
     return function(err) {
         setTimeout(t.end.bind(null, err), 500);
@@ -61,6 +63,25 @@ test('Reads text file', function(t) {
     });
 });
 
+test('Error reading non-existent file', function(t) {
+    fs.readFile('dontexist.txt', { encoding: 'utf8' }, function(err, data) {
+        t.ok(err, 'Should throw error');
+        t.equal(err.message, 'File not found')
+        t.end();
+    });
+});
+
+test('Error reading file from invalid repo', function(t) {
+    var repo = octo.repos(testUser, tempRepoName + '123');
+    var fs = hubfs(repo);
+
+    fs.readFile('test.txt', { encoding: 'utf8' }, function(err, data) {
+        t.ok(err, 'Should throw error');
+        t.equal(err.message, 'File not found')
+        t.end();
+    });
+});
+
 test('Reads binary file', function(t) {
     fs.readFile('test.txt', function(err, data) {
         t.error(err);
@@ -72,5 +93,15 @@ test('Reads binary file', function(t) {
 test('Reads large file', function(t) {
     fs.readFile('test.bin', t.end);
 });
+
+test('Returns error trying to write to invalid repo', function(t) {
+    var repo = octo.repos(testUser, tempRepoName + '123');
+    var fs = hubfs(repo);
+    fs.writeFile('test.txt', 'hello planet', function(err) {
+        t.ok(err, 'should throw error')
+        t.equal(err.message, 'Invalid repo')
+        t.end()
+    });
+})
 
 teardown();

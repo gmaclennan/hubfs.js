@@ -94,7 +94,8 @@ hubfs.prototype.writeFile = function writeFile(filename, data, options, callback
 
   // First, just try to write the file without a sha, but if we get a 422 error,
   // try to get the sha and write an update
-  file.add(params, function(err) {
+  file.add(params, function(err, info) {
+    if (info === false) return callback(new Error('Invalid repo'))
     if (!err) return callback(null);
     if (err.status !== 422 || options.flags === 'wx') return callback(err);
     return _this._getSha.call(_this, params, function(err, sha) {
@@ -189,13 +190,12 @@ hubfs.prototype._getSha = function _getSha(params, cb) {
 
 hubfs.prototype._getShaSlow = function _getShaSlow(params, cb) {
   var repo = this._repo;
-
   repo.git.refs('heads/' + (params.branch || params.ref)).fetch(function(err, ref) {
-    if (err) return cb(err);
+    if (err) return cb(new Error('File not found'));
     repo.git.commits(ref.object.sha).fetch(function(err, commit) {
-      if (err) return cb(err);
+      if (err) return cb(new Error('File not found'));
       repo.git.trees(commit.tree.sha + '?recursive=1').fetch(function(err, tree) {
-        if (err) return cb(err);
+        if (err) return cb(new Error('File not found'));
         for (var i = 0; i < tree.tree.length; i++) {
           if (tree.tree[i].path === params.path) {
             return cb(null, tree.tree[i].sha);
