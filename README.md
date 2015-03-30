@@ -9,19 +9,40 @@ Github API wrapper to writeFile and readFile
 
 A mixin for [Octokat.js](https://github.com/philschatz/octokat.js) that
 provides a simple wrapper for writing to and reading from a repo. It
-provides an interface similar to node.js `fs.readFile` and `fs.writeFile`.
+replicates node.js `fs.readFile` and `fs.writeFile`. It has a few special
+features:
 
-The Github API does not provide an easy way to update a file, and there are
-some little tricky issues around maximum file size for reading using the
-[contents API](https://developer.github.com/v3/repos/contents/). This tries
-to do things the easy (quick) way first, but if not will also work for
-larger files up to 100Mb.
+1. **Minimize requests**
 
-Also handles multiple asynchronous file writes gracefully, queueing up
-writes to avoid Github errors from fast forward commits, and batching
-file writes into single commits of up to 10 files at a time, if you try
-to write another file whilst another is being written to the same repo
-and branch.
+    By default it tries to use the Github [contents
+API](https://developer.github.com/v3/repos/contents/) to read, write with a
+single request and update a file with 3 requests: (a) tries to write; (b)
+gets sha for existing file; (c) writes update
+
+2. **Read and update large files**
+
+    The contents API cannot read or update files larger than 1Mb. Hubfs
+switches to the [git API](https://developer.github.com/v3/git/) to read and
+update files up to 100Mb
+
+3. **Simultaneous writes**
+
+    Repeatedly writing to the contents API [will result in an
+error](http://stackoverflow.com/questions/19576601/github-api-issue-with-file-upload)
+because of delays updating the HEAD, and making multiple simultaneous
+writes will result in the same problem of Fast Forward commits. Hubfs will
+automatically queue up requests and switch to using the git API for
+multiple parallel writes. It will batch together multiple writes to the
+same repo in commits of up to 10 files, but will make commits as quickly as
+it can.
+
+**Limitations**
+
+- Repeat writes do not currently respect `options.flags='wx'` (they will
+overwrite existing files)
+
+- Maximum batch size for commits cannot be changed, awaiting [upstream
+async issue](https://github.com/caolan/async/pull/740)
 
 ### Parameters
 
@@ -33,10 +54,7 @@ and branch.
 ### Example
 
 ```js
-var Hubfs = require('Hubfs')
-var Octokat = require('octokat')
-
-var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" })
+var Hubfs = require('Hubfs') var Octokat = require('octokat') var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" })
 
 var gh = Hubfs(octo.repos('owner', 'repo'))
 ```
@@ -105,34 +123,6 @@ gh.readFile('/my_folder/my_file.txt', function (err, data) {
   console.log(data)
 })
 ```
-
-
-### `_createBlob(content, callback)`
-
-Receives base64 encoded content and creates a new blob on the repo,
-returning the sha
-
-### Parameters
-
-| parameter  | type     | description              |
-| ---------- | -------- | ------------------------ |
-| `content`  | Sting    | `base64` encoded content |
-| `callback` | Function | called with new blob sha |
-
-
-
-### `_commit(files, branch, callback)`
-
-Makes a new commit from an array of blob shas and updates the branch HEAD.
-
-### Parameters
-
-| parameter  | type     | description                                                                                                   |
-| ---------- | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `files`    | Array    | Array of `file` Objects with properties `file.sha` and `file.path` and optional `file.message` commit message |
-| `branch`   | String   | Branch to commit to                                                                                           |
-| `callback` | Function | Called with ref to new head                                                                                   |
-
 
 ## Installation
 
