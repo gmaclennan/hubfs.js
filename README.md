@@ -5,7 +5,7 @@
 Github API wrapper to writeFile and readFile
 
 
-### `hubfs(repo)`
+### `Hubfs(repo)`
 
 A mixin for [Octokat.js](https://github.com/philschatz/octokat.js) that
 provides a simple wrapper for writing to and reading from a repo. It
@@ -17,6 +17,12 @@ some little tricky issues around maximum file size for reading using the
 to do things the easy (quick) way first, but if not will also work for
 larger files up to 100Mb.
 
+Also handles multiple asynchronous file writes gracefully, queueing up
+writes to avoid Github errors from fast forward commits, and batching
+file writes into single commits of up to 10 files at a time, if you try
+to write another file whilst another is being written to the same repo
+and branch.
+
 ### Parameters
 
 | parameter | type                 | description                                                                                                    |
@@ -27,16 +33,16 @@ larger files up to 100Mb.
 ### Example
 
 ```js
-var hubfs = require('hubfs');
-var Octokat = require('octokat');
+var Hubfs = require('Hubfs')
+var Octokat = require('octokat')
 
-var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" });
+var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" })
 
-var gh = hubfs(octo.repos('owner', 'repo'));
+var gh = Hubfs(octo.repos('owner', 'repo'))
 ```
 
 
-**Returns** `Object`, returns and instance of hubfs with two methods `readFile` and `writeFile`.
+**Returns** `Object`, returns and instance of Hubfs with two methods `readFile` and `writeFile`.
 
 
 ### `writeFile(filename, data, [options], callback)`
@@ -64,9 +70,9 @@ not it is preceded by a slash.
 
 ```js
 gh.writeFile('message.txt', 'Hello Github', function (err) {
-  if (err) throw err;
-  console.log('It\'s saved!');
-});
+  if (err) throw err
+  console.log('It\'s saved!')
+})
 ```
 
 
@@ -95,10 +101,38 @@ If no encoding is specified, then the raw buffer is returned.
 
 ```js
 gh.readFile('/my_folder/my_file.txt', function (err, data) {
-  if (err) throw err;
-  console.log(data);
-});
+  if (err) throw err
+  console.log(data)
+})
 ```
+
+
+### `_createBlob(content, callback)`
+
+Receives base64 encoded content and creates a new blob on the repo,
+returning the sha
+
+### Parameters
+
+| parameter  | type     | description              |
+| ---------- | -------- | ------------------------ |
+| `content`  | Sting    | `base64` encoded content |
+| `callback` | Function | called with new blob sha |
+
+
+
+### `_commit(files, branch, callback)`
+
+Makes a new commit from an array of blob shas and updates the branch HEAD.
+
+### Parameters
+
+| parameter  | type     | description                                                                                                   |
+| ---------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `files`    | Array    | Array of `file` Objects with properties `file.sha` and `file.path` and optional `file.message` commit message |
+| `branch`   | String   | Branch to commit to                                                                                           |
+| `callback` | Function | Called with ref to new head                                                                                   |
+
 
 ## Installation
 

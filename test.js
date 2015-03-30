@@ -3,6 +3,7 @@ var test = require('tape')
 var Octokat = require('octokat')
 var dotenv = require('dotenv')
 var bufferEqual = require('buffer-equal')
+var async = require('async')
 
 dotenv.load()
 
@@ -100,6 +101,24 @@ test('Returns error trying to write to invalid repo', function (t) {
   fs.writeFile('test.txt', 'hello planet', function (err) {
     t.ok(err, 'should throw error')
     t.equal(err.message, 'Invalid repo')
+    t.end()
+  })
+})
+
+test('Writes multiple files without error', function (t) {
+  var tasks = []
+  for (var i = 0; i < 20; i++) {
+    tasks.push(function (i) {
+      return function (cb) {
+        fs.writeFile('test' + i + '.txt', 'hello planet' + i, function (err) {
+          t.error(err, 'test' + i + '.txt')
+          cb(err)
+        })
+      }
+    }(i))
+  }
+  async.parallel(tasks, function (err) {
+    t.error(err, 'completed')
     t.end()
   })
 })
