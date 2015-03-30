@@ -2,6 +2,10 @@ var extend = require('xtend')
 var async = require('async')
 var Octokat = require('octokat')
 
+var queues = {}
+var cargos = {}
+var statuses = {}
+
 /**
  * A mixin for [Octokat.js](https://github.com/philschatz/octokat.js) that
  * provides a simple wrapper for writing to and reading from a repo. It
@@ -59,10 +63,8 @@ function Hubfs (options) {
   if (!options.repo) {
     throw new Error('Must provide Github repo name options.repo')
   }
-  this._queue = async.queue(this._createBlob.bind(this), 50)
-  this._cargos = {}
-  this._status = {}
   this._repo = new Octokat(options.auth).repos(options.owner, options.repo)
+  this._reponame = options.owner + '/' + options.repo
 }
 
 /**
@@ -113,36 +115,34 @@ Hubfs.prototype.writeFile = function writeFile (filename, data, options, callbac
 
   // Remove preceding slash on filename
   filename.replace(/^\//, '')
-  var branch = options.branch
-  var status = this._status[branch] = this._status[branch] || {}
+
+  // Writes to each repo/branch need to be queued to avoid Fast Forward errors
+  var id = this._reponame + '/' + options.branch
+  var status = statuses[id] = statuses[id] || {}
+  var queue = queues[id] = queues[id] || async.queue(this._createBlob.bind(this), 50)
+  var cargo = cargos[id] = cargos[id] || async.cargo(cargoWorker, 10)
+  cargo.drain = function () { status.queueing = false }
 
   var params = {
     path: filename,
     message: options.message,
-    branch: branch,
+    branch: options.branch,
     content: data.toString('base64')
   }
 
   var _this = this
 
   if (status.writing && !status.next) {
-    this._queue.pause()
+    queue.pause()
     status.next = function () {
-      _this._queue.resume()
+      queue.resume()
       status.next = null
     }
   }
 
   if (options.safe || status.writing || status.queueing) {
-    var cargo
     status.queueing = true
-    if (!this._cargos[branch]) {
-      cargo = this._cargos[branch] = async.cargo(cargoWorker, 10)
-      cargo.drain = function () { status.queueing = false }
-    } else {
-      cargo = this._cargos[branch]
-    }
-    this._queue.push(params, function (err, file) {
+    queue.push(params, function (err, file) {
       if (err) callback(err)
       cargo.push(file, callback)
     })
@@ -150,7 +150,7 @@ Hubfs.prototype.writeFile = function writeFile (filename, data, options, callbac
   }
 
   function cargoWorker (files, cb) {
-    _this._commit.call(_this, files, branch, cb)
+    _this._commit.call(_this, files, options.branch, cb)
   }
 
   var file = this._repo.contents(filename)
