@@ -5,7 +5,7 @@
 Github API wrapper to writeFile and readFile
 
 
-### `Hubfs(repo)`
+### `Hubfs(options)`
 
 A mixin for [Octokat.js](https://github.com/philschatz/octokat.js) that
 provides a simple wrapper for writing to and reading from a repo. It
@@ -44,19 +44,36 @@ overwrite existing files)
 - Maximum batch size for commits cannot be changed, awaiting [upstream
 async issue](https://github.com/caolan/async/pull/740)
 
+### Breaking change in v1.0.0
+
+No longer operates as a Octokat mixin, instead new instances are created
+with an `options` object with the owner, repo and auth, which is passed
+to Octokat.
+
+
 ### Parameters
 
-| parameter | type                 | description                                                                                                    |
-| --------- | -------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `repo`    | Octokat\.users\.repo | A vaid repo returned from Octokat with the call `octo.user.repos('user', 'reponame')`. See below for examples. |
+| parameter | type   | description                                                                                                                                                                              |
+| --------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options` | Object | `options.owner` Github repo owner, `options.repo` repo name, `options.auth` (optional) passed through to a new
+[Octokat instance](https://github.com/philschatz/octokat.js#in-a-browser) |
 
 
 ### Example
 
 ```js
-var Hubfs = require('Hubfs') var Octokat = require('octokat') var octo = new Octocat({ username: "USER_NAME", password: "PASSWORD" })
+var Hubfs = require('Hubfs')
 
-var gh = Hubfs(octo.repos('owner', 'repo'))
+var options = {
+  owner: 'github_username',
+  repo: 'github_repo_name'
+  auth: {
+    username: "USER_NAME",
+    password: "PASSWORD"
+  }
+}
+
+var gh = Hubfs(options)
 ```
 
 
