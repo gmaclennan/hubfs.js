@@ -1,6 +1,6 @@
 {
   "name": "hubfs.js",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Github API wrapper to writeFile and readFile",
   "main": "index.js",
   "scripts": {
