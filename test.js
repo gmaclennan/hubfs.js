@@ -10,22 +10,26 @@ dotenv.load()
 var tempRepoName = 'test' + Date.now()
 var testUser = process.env.GITHUB_USER
 
-var octo = new Octokat({
-  token: process.env.GITHUB_TOKEN
-})
+var options = {
+  owner: testUser,
+  repo: tempRepoName,
+  auth: {
+    token: process.env.GITHUB_TOKEN
+  }
+}
 
-var repo = octo.repos(testUser, tempRepoName)
-
-var fs = hubfs(repo)
+var fs = hubfs(options)
 
 function setup () {
   test('Create temporary test repo', function (t) {
+    var octo = new Octokat(options.auth)
     octo.user.repos.create({ name: tempRepoName, auto_init: true }, t.end)
   })
 }
 
 function teardown () {
   test('Delete temporary test repo', function (t) {
+    var octo = new Octokat(options.auth)
     octo.repos(testUser, tempRepoName).remove(t.end)
   })
 }
@@ -73,8 +77,14 @@ test('Error reading non-existent file', function (t) {
 })
 
 test('Error reading file from invalid repo', function (t) {
-  var repo = octo.repos(testUser, tempRepoName + '123')
-  var fs = hubfs(repo)
+  var options = {
+    owner: testUser,
+    repo: tempRepoName + '123',
+    auth: {
+      token: process.env.GITHUB_TOKEN
+    }
+  }
+  var fs = hubfs(options)
 
   fs.readFile('test.txt', { encoding: 'utf8' }, function (err, data) {
     t.ok(err, 'Should throw error')
@@ -96,8 +106,15 @@ test('Reads large file', function (t) {
 })
 
 test('Returns error trying to write to invalid repo', function (t) {
-  var repo = octo.repos(testUser, tempRepoName + '123')
-  var fs = hubfs(repo)
+  var options = {
+    owner: testUser,
+    repo: tempRepoName + '123',
+    auth: {
+      token: process.env.GITHUB_TOKEN
+    }
+  }
+  var fs = hubfs(options)
+
   fs.writeFile('test.txt', 'hello planet', function (err) {
     t.ok(err, 'should throw error')
     t.equal(err.message, 'Invalid repo')

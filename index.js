@@ -1,5 +1,6 @@
 var extend = require('xtend')
 var async = require('async')
+var Octokat = require('octokat')
 
 /**
  * A mixin for [Octokat.js](https://github.com/philschatz/octokat.js) that
@@ -47,20 +48,21 @@ var async = require('async')
  *
  * var gh = Hubfs(octo.repos('owner', 'repo'))
  */
-function Hubfs (repo) {
+function Hubfs (options) {
   if (!(this instanceof Hubfs)) {
-    return new Hubfs(repo)
+    return new Hubfs(options)
   }
-  // Basic checks that we have a valid octokat repo.
-  if ((typeof repo !== 'function') ||
-    (typeof repo.contents !== 'function') ||
-    (typeof repo.git !== 'function')) {
-    throw new Error('Need to provide an octokat repo to constructor')
+  options = options || {}
+  if (!options.owner) {
+    throw new Error('Must provide Github repo owner options.owner')
   }
-  this._repo = repo
+  if (!options.repo) {
+    throw new Error('Must provide Github repo name options.repo')
+  }
   this._queue = async.queue(this._createBlob.bind(this), 50)
   this._cargos = {}
   this._status = {}
+  this._repo = new Octokat(options.auth).repos(options.owner, options.repo)
 }
 
 /**
