@@ -111,15 +111,30 @@ test('Writes multiple files without error', function (t) {
     tasks.push(function (i) {
       return function (cb) {
         fs.writeFile('test' + i + '.txt', 'hello planet' + i, function (err) {
-          t.error(err, 'test' + i + '.txt')
+          t.error(err, 'wrote test' + i + '.txt')
           cb(err)
         })
       }
     }(i))
   }
   async.parallel(tasks, function (err) {
-    t.error(err, 'completed')
-    t.end()
+    t.error(err, 'completed without error')
+    t.skip('checking files exist')
+    var tasks = []
+    for (var i = 0; i < 20; i++) {
+      tasks.push(function (i) {
+        return function (cb) {
+          fs.readFile('test' + i + '.txt', function (err) {
+            t.error(err, 'test' + i + '.txt exists')
+            cb(err)
+          })
+        }
+      }(i))
+    }
+    async.parallel(tasks, function (err) {
+      t.error(err, 'all files exist on repo')
+      t.end()
+    })
   })
 })
 
