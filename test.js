@@ -3,7 +3,6 @@ var test = require('tape')
 var Octokat = require('octokat')
 var dotenv = require('dotenv')
 var bufferEqual = require('buffer-equal')
-var async = require('async')
 
 dotenv.load()
 
@@ -123,34 +122,40 @@ test('Returns error trying to write to invalid repo', function (t) {
 })
 
 test('Writes multiple files without error', function (t) {
-  var tasks = []
-  for (var i = 0; i < 20; i++) {
-    tasks.push(function (i) {
-      return function (cb) {
-        fs.writeFile('test' + i + '.txt', 'hello planet' + i, function (err) {
-          t.error(err, 'wrote test' + i + '.txt')
-          cb(err)
-        })
-      }
-    }(i))
-  }
-  async.parallel(tasks, function (err) {
-    t.error(err, 'completed without error')
-    t.skip('checking files exist')
-    var tasks = []
-    for (var i = 0; i < 20; i++) {
-      tasks.push(function (i) {
-        return function (cb) {
-          fs.readFile('test' + i + '.txt', function (err) {
-            t.error(err, 'test' + i + '.txt exists')
-            cb(err)
-          })
-        }
-      }(i))
-    }
-    async.parallel(tasks, function (err) {
-      t.error(err, 'all files exist on repo')
-      t.end()
+  t.plan(60)
+  var tasks = Array.apply(null, Array(20))
+  tasks.forEach(function (v, i) {
+    fs.writeFile('test' + i + '.txt', 'hello planet' + i, { encoding: 'utf8' }, function (err) {
+      t.error(err, 'wrote test' + i + '.txt without error')
+      fs.readFile('test' + i + '.txt', { encoding: 'utf8' }, function (err, data) {
+        t.error(err, 'test' + i + '.txt exists in repo')
+        t.equal(data, 'hello planet' + i, 'test' + i + '.txt file content matches')
+      })
+    })
+  })
+})
+
+test('Can write multiple concurrent files to different hubfs instances', function (t) {
+  t.plan(60)
+  var fs2 = hubfs(options)
+  var tasks = Array.apply(null, Array(10))
+  tasks.forEach(function (v, i) {
+    fs.writeFile('test' + i + '.txt', 'hello planet' + i, { encoding: 'utf8' }, function (err) {
+      t.error(err, 'wrote test' + i + '.txt without error')
+      fs.readFile('test' + i + '.txt', { encoding: 'utf8' }, function (err, data) {
+        t.error(err, 'test' + i + '.txt exists in repo')
+        t.equal(data, 'hello planet' + i, 'test' + i + '.txt file content matches')
+      })
+    })
+  })
+  tasks.forEach(function (v, i) {
+    i = i + 10
+    fs2.writeFile('test' + i + '.txt', 'hello planet' + i, { encoding: 'utf8' }, function (err) {
+      t.error(err, 'wrote test' + i + '.txt without error')
+      fs2.readFile('test' + i + '.txt', { encoding: 'utf8' }, function (err, data) {
+        t.error(err, 'test' + i + '.txt exists in repo')
+        t.equal(data, 'hello planet' + i, 'test' + i + '.txt file content matches')
+      })
     })
   })
 })
